@@ -10,9 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import org.json.JSONException;
-
 import java.util.ArrayList;
 
 public class CountriesListActivity extends AppCompatActivity implements AsyncTaskResponse{
@@ -59,10 +56,9 @@ public class CountriesListActivity extends AppCompatActivity implements AsyncTas
         final CountryAdapter adapter = new CountryAdapter(countries);
 
         //TODO pass adapter
-        //CustomSwipeCallback customItemTouchCallBack =  new CustomSwipeCallback();
-        //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(customItemTouchCallBack);
-
-        //itemTouchHelper.attachToRecyclerView(rvCountries);
+        CustomSwipeCallback customItemTouchCallBack =  new CustomSwipeCallback(this, rvCountries, adapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(customItemTouchCallBack);
+        itemTouchHelper.attachToRecyclerView(rvCountries);
 
         rvCountries.setLayoutManager(layoutManager);
         rvCountries.setAdapter(adapter);

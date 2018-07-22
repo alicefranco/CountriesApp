@@ -45,14 +45,12 @@ class CountryAdapter extends RecyclerView.Adapter<CountryAdapter.ViewHolder> {
         TextView countryName;
         TextView countryLanguage;
         TextView countryCurrency;
-        //View countryItem;
 
         ViewHolder(View itemView) {
             super(itemView);
             countryName = itemView.findViewById(R.id.tv_country_name);
             countryLanguage = itemView.findViewById(R.id.tv_country_language_value);
             countryCurrency = itemView.findViewById(R.id.tv_country_currency_value);
-            //countryItem = itemView.findViewById(R.id.cl_country);
         }
     }
 }
