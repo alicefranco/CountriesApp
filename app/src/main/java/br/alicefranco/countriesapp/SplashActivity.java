@@ -19,8 +19,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
 
-        //TODO fetch data from API
-
         new Timer().schedule(new TimerTask(){
             public void run() {
                 SplashActivity.this.runOnUiThread(new Runnable() {

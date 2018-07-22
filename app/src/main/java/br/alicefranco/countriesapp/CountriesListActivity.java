@@ -1,15 +1,17 @@
 package br.alicefranco.countriesapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -31,7 +33,7 @@ public class CountriesListActivity extends AppCompatActivity implements AsyncTas
         reloadButton = findViewById(R.id.reload_button);
         errorMessage = findViewById(R.id.tv_countries_error);
 
-        errorMessage.setOnClickListener(new View.OnClickListener() {
+        reloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 progress.setVisibility(View.VISIBLE);
@@ -54,7 +56,13 @@ public class CountriesListActivity extends AppCompatActivity implements AsyncTas
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(rvCountries.getContext(), layoutManager.getOrientation());
 
-        CountryAdapter adapter = new CountryAdapter(countries);
+        final CountryAdapter adapter = new CountryAdapter(countries);
+
+        //TODO pass adapter
+        //CustomSwipeCallback customItemTouchCallBack =  new CustomSwipeCallback();
+        //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(customItemTouchCallBack);
+
+        //itemTouchHelper.attachToRecyclerView(rvCountries);
 
         rvCountries.setLayoutManager(layoutManager);
         rvCountries.setAdapter(adapter);
@@ -62,26 +70,26 @@ public class CountriesListActivity extends AppCompatActivity implements AsyncTas
         progress.setVisibility(View.GONE);
     }
 
-    /*public void setupCountries(){
-        countries.add(new Country("Canada", "English", "Dolar"));
-        countries.add(new Country("Ireland", "English", "Dolar"));
-        countries.add(new Country("New Zealand", "English", "Dolar"));
-    }*/
 
     @Override
-    public void onResponse(String response, Boolean error) {
-        //TODO deserialize\
+    public void onResponse(String response, Boolean error){
         if(error){
             progress.setVisibility(View.GONE);
             errorMessage.setVisibility(View.VISIBLE);
             reloadButton.setVisibility(View.VISIBLE);
-
         }
         else {
             JsonDeserializer deserializer = new JsonDeserializer(response);
-            setupRecycler(deserializer.deserialize());
+            if(deserializer.deserialize() != null)
+                setupRecycler(deserializer.deserialize());
+            else{
+                progress.setVisibility(View.GONE);
+                errorMessage.setVisibility(View.VISIBLE);
+                reloadButton.setVisibility(View.VISIBLE);
+            }
             progress.setVisibility(View.GONE);
-
         }
     }
 }
+
+
