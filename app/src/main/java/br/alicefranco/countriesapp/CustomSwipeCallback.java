@@ -62,25 +62,76 @@ public class CustomSwipeCallback extends ItemTouchHelper.Callback {
     }
 
     @Override
+    public float getSwipeThreshold (RecyclerView.ViewHolder viewHolder){
+        return .65f;
+    }
+
+    @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        Bitmap icon;
+       /* Bitmap icon;
+        View itemView = viewHolder.itemView;
+        Integer thresholdPos = - (itemView.getRight() - itemView.getLeft()) + ((itemView.getRight() - itemView.getLeft())/4)*3;
+        Integer thresholdIm =  (itemView.getRight() - itemView.getLeft()) - ((itemView.getRight() - itemView.getLeft())/4);
+        float height = (float) itemView.getBottom() - (float) itemView.getTop();
+        float width = height / 3;
         if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
-
-            View itemView = viewHolder.itemView;
-            float height = (float) itemView.getBottom() - (float) itemView.getTop();
-            float width = height / 3;
-
-            if(dX < 0){
-                p.setColor(context.getResources().getColor(R.color.colorMainApp));
-                RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
-                c.drawRect(background,p);
-                icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.delete_icon);
-                RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
-                c.drawBitmap(icon,null,icon_dest,p);
+            if(isCurrentlyActive) {
+                if (dX < 0) {
+                    p.setColor(context.getResources().getColor(R.color.colorMainApp));
+                    RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+                    c.drawRect(background, p);
+                    icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.delete_icon);
+                    RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+                    c.drawBitmap(icon, null, icon_dest, p);
+                }
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            else{
+                if (dX > thresholdPos) {
+                    p.setColor(context.getResources().getColor(R.color.colorMainApp));
+                    RectF background = new RectF((float) thresholdIm, (float) itemView.getTop(), (float) itemView.getRight(), (float) itemView.getBottom());
+                    c.drawRect(background, p);
+                    icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.delete_icon);
+                    RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+                    c.drawBitmap(icon, null, icon_dest, p);
+                }
+                //super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
         }
-        else super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        //else //super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);*/
+
+        float translationX = dX;
+        View itemView = viewHolder.itemView;
+        float height = (float)itemView.getBottom() - (float)itemView.getTop();
+        Bitmap icon;
+        float width = height / 3;
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX <= 0) // Swiping Left
+        {
+            translationX = -Math.min(-dX, height);
+            p.setColor(context.getResources().getColor(R.color.colorMainApp));
+            RectF background = new RectF((float)itemView.getRight() + dX, (float)itemView.getTop(), (float)itemView.getRight(), (float)itemView.getBottom());
+            c.drawRect(background, p);
+
+            icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.delete_icon);
+            RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+            c.drawBitmap(icon, null, icon_dest, p);
+
+            //viewHolder.ItemView.TranslationX = translationX;
+        }
+        else if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE && dX > 0) // Swiping Right
+        {
+            translationX = Math.min(dX, height * 2);
+            p.setColor(context.getResources().getColor(R.color.colorMainApp));
+            RectF background = new RectF((float)itemView.getRight() + translationX, (float)itemView.getTop(), (float)itemView.getRight(), (float)itemView.getBottom());
+            c.drawRect(background, p);
+
+            icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.delete_icon);
+            RectF icon_dest = new RectF((float) itemView.getRight() - 2 * width, (float) itemView.getTop() + width, (float) itemView.getRight() - width, (float) itemView.getBottom() - width);
+            c.drawBitmap(icon, null, icon_dest, p);
+
+        }
+
+        super.onChildDraw(c, recyclerView, viewHolder, translationX, dY, actionState, isCurrentlyActive);
 
     }
 }
